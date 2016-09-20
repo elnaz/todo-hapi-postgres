@@ -1,0 +1,51 @@
+{
+  "name": "todo-hapi-postgres",
+  "version": "0.0.0",
+  "description": "Node/Hapi + Postgres implementation of the Todo-Backend API spec",
+  "main": "lib/index.js",
+  "scripts": {
+    "db:migrate": "knex migrate:latest --knexfile db/index.js",
+    "db:migrate:make": "knex migrate:make --knexfile db/index.js",
+    "db:reset": "if [ \"$NODE_ENV\" != \"production\" ]; then dropdb $(node -p \"require('./config').DB_NAME\"); npm run db:setup && npm run db:migrate; fi",
+    "db:rollback": "knex migrate:rollback --knexfile db/index.js",
+    "db:setup": "if [ \"$NODE_ENV\" != \"production\" ]; then createdb -O $(node -e \"var c = require('./config'); console.log(c.DB_USER, c.DB_NAME);\"); fi",
+    "db:setup:user": "if [ \"$NODE_ENV\" != \"production\" ]; then createuser $(node -p \"require('./config').DB_USER\"); fi",
+    "heroku-postbuild": "npm run db:migrate",
+    "lint": "eslint .",
+    "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
+    "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
+    "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags",
+    "start": "nodemon --ignore test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elnaz/todo-hapi-postgres.git"
+  },
+  "keywords": [
+    "todo",
+    "todo-backend",
+    "hapi",
+    "postgres"
+  ],
+  "author": "Elnaz Moshfeghian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elnaz/todo-hapi-postgres/issues"
+  },
+  "homepage": "https://github.com/elnaz/todo-hapi-postgres#readme",
+  "devDependencies": {
+    "eslint": "^1.9.0",
+    "eslint-config-lob": "^2.0.0",
+    "generate-changelog": "^1.0.0",
+    "nodemon": "^1.10.2"
+  },
+  "dependencies": {
+    "bookshelf": "^0.10.1",
+    "hapi": "^15.0.3",
+    "hapi-format-error": "^1.1.0",
+    "joi": "^9.0.4",
+    "knex": "^0.12.1",
+    "nodemon": "^1.10.2",
+    "pg": "^6.1.0"
+  }
+}
